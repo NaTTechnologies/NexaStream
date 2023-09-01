@@ -1,30 +1,24 @@
 package com.nat.nexastream.example;
 
 import com.nat.nexastream.annotations.distribution.*;
-import com.nat.nexastream.core.tasks.TaskExecutionContext;
-import com.nat.nexastream.exceptions.TemporaryFailureException;
+import com.nat.nexastream.example.condition.CustomRetryCondition;
 
+@Node(name = "exampleTask")
 public class TaskProcessor {
 
     @LoadBalanced
-    @DistributableTask(priority = 5, dependencies = {"dataFetcher"})
+    @DistributableTask(priority = 5, dependencies = {"dataFetcher"}, name = "processTask")
     @RetryableTask(maxRetries = 3, retryDelay = 1000)
     @TaskRetryCondition(conditionClass = CustomRetryCondition.class)
     @TaskTimeout(timeoutMillis = 5000)
     public void processTask() {
         // Lógica de procesamiento de la tarea
+        System.out.println("processTask ");
     }
 
-    @DistributableTask(priority = 10, dependencies = {})
+    @DistributableTask(priority = 10, dependencies = {}, name = "dataFetcher")
     public void dataFetcher() {
         // Lógica para obtener datos necesarios
-    }
-}
-
-class CustomRetryCondition implements TaskRetryCondition.Condition {
-    @Override
-    public boolean shouldRetry(TaskExecutionContext context) {
-        // Lógica personalizada para decidir si reintentar la tarea
-        return context.getRetryCount() < 3 && context.getLastException() instanceof TemporaryFailureException;
+        System.out.println("dataFetcher");
     }
 }

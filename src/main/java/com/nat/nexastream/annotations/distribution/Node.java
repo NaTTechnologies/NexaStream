@@ -6,10 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface DistributableTask {
-    int priority();
-    String[] dependencies();
-
+@Target(ElementType.TYPE)
+public @interface Node {
     String name();
 }

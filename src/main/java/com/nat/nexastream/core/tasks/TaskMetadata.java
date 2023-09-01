@@ -15,8 +15,6 @@ class TaskMetadata {
     }
 
     // Getters para los atributos
-
-
     public String getClassName() {
         return className;
     }
