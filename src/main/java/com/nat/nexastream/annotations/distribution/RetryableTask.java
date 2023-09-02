@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface RetryableTask {
-    int maxRetries();
-    long retryDelay();
+    int maxRetries() default 1;
+    long retryDelay() default 0;
 }

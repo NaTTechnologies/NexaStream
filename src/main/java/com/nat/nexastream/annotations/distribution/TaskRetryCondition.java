@@ -10,9 +10,10 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
 public @interface TaskRetryCondition {
+    long retryDelay();
     Class<?> conditionClass();
 
     public interface Condition {
-        public boolean shouldRetry(TaskExecutionContext context);
+        public boolean shouldRetry(TaskExecutionContext context, Exception e);
     }
 }

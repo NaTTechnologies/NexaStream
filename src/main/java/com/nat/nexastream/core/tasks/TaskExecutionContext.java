@@ -2,21 +2,25 @@ package com.nat.nexastream.core.tasks;
 
 import com.nat.nexastream.annotations.distribution.DistributableTask;
 import com.nat.nexastream.annotations.distribution.Node;
+import com.nat.nexastream.annotations.distribution.RetryableTask;
+import com.nat.nexastream.annotations.distribution.TaskRetryCondition;
 
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class TaskExecutionContext {
-    private int retryCount;
+    private ExecutorService executorService;
+    private int retryCount = 0;
     private Throwable lastException;
     private List<String> dependentTaskNames;
 
@@ -33,6 +37,7 @@ public class TaskExecutionContext {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        executorService = Executors.newFixedThreadPool(1); // Un solo hilo para ejecutar tareas
     }
 
     public List<TaskMetadata> scanPackageForTasks(String packageName) throws ClassNotFoundException, IOException {
@@ -97,21 +102,19 @@ public class TaskExecutionContext {
         return taskList;
     }
 
-
-
     public void executeTask(String taskName)
             throws NoSuchMethodException,
-                IllegalAccessException,
-                InvocationTargetException,
-                ClassNotFoundException,
-                InstantiationException {
+            IllegalAccessException,
+            InvocationTargetException,
+            ClassNotFoundException,
+            InstantiationException {
         // Buscar la tarea por su nombre
         TaskMetadata taskMetadata = findTaskMetadataByName(taskName);
 
         if (taskMetadata != null) {
             DistributableTask distributableTask = taskMetadata.getAnnotation();
 
-            for (String dependency : distributableTask.dependencies()){
+            for (String dependency : distributableTask.dependencies()) {
                 executeTask(dependency);
             }
 
@@ -123,8 +126,78 @@ public class TaskExecutionContext {
             Class<?> taskClass = Class.forName(className);
             Object taskInstance = taskClass.newInstance();
 
+            // Verificar si el método está anotado con @RetryableTask
             Method taskMethod = taskClass.getMethod(methodName);
-            taskMethod.invoke(taskInstance);
+
+            if (taskMethod.isAnnotationPresent(RetryableTask.class)) {
+                RetryableTask retryableTaskAnnotation = taskMethod.getAnnotation(RetryableTask.class);
+                int maxRetries = retryableTaskAnnotation.maxRetries();
+                long retryDelay = retryableTaskAnnotation.retryDelay();
+                boolean taskCompleted = false;
+
+                if (taskMethod.isAnnotationPresent(TaskRetryCondition.class)){
+                    TaskRetryCondition taskRetryCondition = taskMethod.getAnnotation(TaskRetryCondition.class);
+                    TaskRetryCondition.Condition condition = (TaskRetryCondition.Condition) taskRetryCondition.conditionClass().newInstance();
+
+                    for (int retryCount = 1; retryCount <= maxRetries; retryCount++) {
+                        retryCount++;
+                        try {
+                            taskMethod.invoke(taskInstance);
+                            break;
+                        } catch (Exception e) {
+                            // Se produjo una excepción al ejecutar la tarea
+                            this.lastException = e.getCause();
+                            System.err.println("Excepción al ejecutar la tarea. Reintentando... ");
+
+                            if (condition.shouldRetry(this, (Exception) e.getCause())){
+                                // Espera antes de reintentar
+                                try {
+                                    Thread.sleep(taskRetryCondition.retryDelay());
+                                } catch (InterruptedException ex) {
+                                    Thread.currentThread().interrupt();
+                                }
+                                continue;
+                            } else {
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    for (int retryCount = 1; retryCount <= maxRetries; retryCount++) {
+                        try {
+                            taskMethod.invoke(taskInstance);
+                            taskCompleted = true; // La tarea se ejecutó exitosamente
+                            break; // Sal del bucle si la tarea se completó con éxito
+                        } catch (Exception e) {
+                            // Se produjo una excepción al ejecutar la tarea
+                            lastException = e.getCause();
+                            System.err.println("Excepción al ejecutar la tarea. Reintentando...");
+
+                            if (retryCount < maxRetries) {
+                                // Espera antes de reintentar
+                                try {
+                                    Thread.sleep(retryDelay);
+                                } catch (InterruptedException ex) {
+                                    Thread.currentThread().interrupt();
+                                }
+                            }
+                        }
+                    }
+
+                    if (!taskCompleted) {
+                        // Si la tarea no se completó después de los reintentos, puedes manejarlo aquí
+                        System.err.println("La tarea no se pudo completar después de " + maxRetries + " reintentos.");
+                        // Puedes agregar lógica adicional, como registrar la excepción o realizar otras acciones.
+                    }
+                }
+            } else {
+                // El método no está anotado con @RetryableTask, ejecutarlo sin reintentos
+                try {
+                    taskMethod.invoke(taskInstance);
+                } catch (Exception e) {
+                    // Manejar excepciones si es necesario
+                }
+            }
         } else {
             throw new IllegalArgumentException("Tarea no encontrada: " + taskName);
         }
