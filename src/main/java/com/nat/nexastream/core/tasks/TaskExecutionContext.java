@@ -19,13 +19,12 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 public class TaskExecutionContext {
+    private static TaskExecutionContext taskExecutionContext;
     private ExecutorService executorService;
     private int retryCount = 0;
     private Throwable lastException;
     private List<String> dependentTaskNames;
-
     private List<TaskMetadata> taskMetadataList;
-
     private Map<String, TaskMetadata> taskMetadataMap;
 
     public TaskExecutionContext(String packageName) {
@@ -39,6 +38,7 @@ public class TaskExecutionContext {
         }
         executorService = Executors.newFixedThreadPool(1); // Un solo hilo para ejecutar tareas
     }
+
 
     public List<TaskMetadata> scanPackageForTasks(String packageName) throws ClassNotFoundException, IOException {
         List<TaskMetadata> taskList = new ArrayList<>();
@@ -61,12 +61,13 @@ public class TaskExecutionContext {
                             String className = entry.getName().replace('/', '.').replace('\\', '.').replace(".class", "");
                             Class<?> clazz = Class.forName(className);
                             if (clazz.isAnnotationPresent(Node.class)) {
+                                Node node = clazz.getAnnotation(Node.class);
                                 // La clase está anotada con @Node, examinar sus métodos
                                 Method[] methods = clazz.getDeclaredMethods();
                                 for (Method method : methods) {
                                     if (method.isAnnotationPresent(DistributableTask.class)) {
                                         DistributableTask annotation = method.getAnnotation(DistributableTask.class);
-                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation);
+                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName());
                                         taskList.add(metadata);
                                     }
                                 }
@@ -83,12 +84,13 @@ public class TaskExecutionContext {
                             String className = packageName + "." + file.getName().replace(".class", "");
                             Class<?> clazz = Class.forName(className);
                             if (clazz.isAnnotationPresent(Node.class)) {
+                                Node node = clazz.getAnnotation(Node.class);
                                 // La clase está anotada con @Node, examinar sus métodos
                                 Method[] methods = clazz.getDeclaredMethods();
                                 for (Method method : methods) {
                                     if (method.isAnnotationPresent(DistributableTask.class)) {
                                         DistributableTask annotation = method.getAnnotation(DistributableTask.class);
-                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation);
+                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName());
                                         taskList.add(metadata);
                                     }
                                 }

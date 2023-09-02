@@ -7,11 +7,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface DistributableTask {
-    int priority() default 0;
-    String[] dependencies() default {};
-
+public @interface TaskDependency {
     String name();
-
-    boolean dependency() default false;
 }
