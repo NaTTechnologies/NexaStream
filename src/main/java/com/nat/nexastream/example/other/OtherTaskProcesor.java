@@ -1,4 +1,4 @@
-package com.nat.nexastream.example;
+package com.nat.nexastream.example.other;
 
 import com.nat.nexastream.annotations.distribution.DistributableTask;
 import com.nat.nexastream.annotations.distribution.Node;

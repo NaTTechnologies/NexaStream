@@ -1,18 +1,13 @@
 package com.nat.nexastream.core.tasks;
 
-import com.nat.nexastream.annotations.distribution.DistributableTask;
-import com.nat.nexastream.annotations.distribution.Node;
-import com.nat.nexastream.annotations.distribution.RetryableTask;
-import com.nat.nexastream.annotations.distribution.TaskRetryCondition;
+import com.nat.nexastream.annotations.distribution.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.jar.JarEntry;
@@ -27,7 +22,10 @@ public class TaskExecutionContext {
     private List<TaskMetadata> taskMetadataList;
     private Map<String, TaskMetadata> taskMetadataMap;
 
+    private Map<String, Object> dependecies;
+
     public TaskExecutionContext(String packageName) {
+        dependecies = new HashMap<>();
         // Escanear el paquete y buscar tareas anotadas
         try {
             taskMetadataList = scanPackageForTasks(packageName);
@@ -35,12 +33,20 @@ public class TaskExecutionContext {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (InstantiationException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
         executorService = Executors.newFixedThreadPool(1); // Un solo hilo para ejecutar tareas
     }
 
 
-    public List<TaskMetadata> scanPackageForTasks(String packageName) throws ClassNotFoundException, IOException {
+    public List<TaskMetadata> scanPackageForTasks(String packageName)
+            throws ClassNotFoundException, IOException, InstantiationException,
+            IllegalAccessException, InvocationTargetException {
         List<TaskMetadata> taskList = new ArrayList<>();
 
         String path = packageName.replace('.', '/');
@@ -62,6 +68,7 @@ public class TaskExecutionContext {
                             Class<?> clazz = Class.forName(className);
                             if (clazz.isAnnotationPresent(Node.class)) {
                                 Node node = clazz.getAnnotation(Node.class);
+                                Object nodeInstance = clazz.newInstance();
                                 // La clase está anotada con @Node, examinar sus métodos
                                 Method[] methods = clazz.getDeclaredMethods();
                                 for (Method method : methods) {
@@ -70,10 +77,21 @@ public class TaskExecutionContext {
                                         TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName());
                                         taskList.add(metadata);
                                     }
+
+                                    if (method.isAnnotationPresent(DataDependency.class)){
+                                        DataDependency dataDependency = method.getAnnotation(DataDependency.class);
+                                        dependecies.put(dataDependency.dataKey(), method.invoke(nodeInstance));
+                                    }
                                 }
                             }
                         }
                     }
+                } catch (InstantiationException e) {
+                    throw new RuntimeException(e);
+                } catch (IllegalAccessException e) {
+                    throw new RuntimeException(e);
+                } catch (InvocationTargetException e) {
+                    throw new RuntimeException(e);
                 }
             } else {
                 // Si el elemento del classpath es un directorio
@@ -83,6 +101,7 @@ public class TaskExecutionContext {
                         if (file.isFile() && file.getName().endsWith(".class")) {
                             String className = packageName + "." + file.getName().replace(".class", "");
                             Class<?> clazz = Class.forName(className);
+                            Object nodeInstance = clazz.newInstance();
                             if (clazz.isAnnotationPresent(Node.class)) {
                                 Node node = clazz.getAnnotation(Node.class);
                                 // La clase está anotada con @Node, examinar sus métodos
@@ -92,6 +111,11 @@ public class TaskExecutionContext {
                                         DistributableTask annotation = method.getAnnotation(DistributableTask.class);
                                         TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName());
                                         taskList.add(metadata);
+                                    }
+
+                                    if (method.isAnnotationPresent(DataDependency.class)){
+                                        DataDependency dataDependency = method.getAnnotation(DataDependency.class);
+                                        dependecies.put(dataDependency.dataKey(), method.invoke(nodeInstance));
                                     }
                                 }
                             }
@@ -130,6 +154,17 @@ public class TaskExecutionContext {
 
             // Verificar si el método está anotado con @RetryableTask
             Method taskMethod = taskClass.getMethod(methodName);
+
+            Field[] fields = taskClass.getDeclaredFields();
+
+            for(Field field: fields){
+                if (field.isAnnotationPresent(InjectDependency.class)){
+                    InjectDependency injectDependency = field.getDeclaredAnnotation(InjectDependency.class);
+
+                    field.setAccessible(true);
+                    field.set(taskInstance, dependecies.get(injectDependency.name()));
+                }
+            }
 
             if (taskMethod.isAnnotationPresent(RetryableTask.class)) {
                 RetryableTask retryableTaskAnnotation = taskMethod.getAnnotation(RetryableTask.class);

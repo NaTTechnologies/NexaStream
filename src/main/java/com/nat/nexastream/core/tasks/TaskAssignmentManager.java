@@ -18,7 +18,7 @@ public class TaskAssignmentManager {
     private final ExecutorService executorService;
 
     public TaskAssignmentManager(String packageName)
-            throws ClassNotFoundException, IOException {
+            throws ClassNotFoundException, IOException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.taskExecutionContext = new TaskExecutionContext(packageName);
         this.nodeTaskMap = new HashMap<>();
 
@@ -47,17 +47,24 @@ public class TaskAssignmentManager {
                 String taskName = metadata.getTaskName();
                 Runnable taskRunner = () -> {
                     // Ejecuta la tarea con reintentos si es necesario
+
                     try {
                         executeTask(taskName);
+
                     } catch (ClassNotFoundException e) {
+                        e.printStackTrace();
                         throw new RuntimeException(e);
                     } catch (InvocationTargetException e) {
+                        e.printStackTrace();
                         throw new RuntimeException(e);
                     } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
                         throw new RuntimeException(e);
                     } catch (IllegalAccessException e) {
+                        e.printStackTrace();
                         throw new RuntimeException(e);
                     } catch (InstantiationException e) {
+                        e.printStackTrace();
                         throw new RuntimeException(e);
                     }
                 };
@@ -73,7 +80,7 @@ public class TaskAssignmentManager {
 
     private void executeTask(String taskName) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         taskExecutionContext.executeTask(taskName);
-        //awaitCompletion();
+        awaitCompletion();
     }
 
     private void awaitCompletion() {
