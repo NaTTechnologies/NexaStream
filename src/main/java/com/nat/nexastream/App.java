@@ -1,21 +1,19 @@
 package com.nat.nexastream;
 
 import com.nat.nexastream.core.tasks.TaskAssignmentManager;
-import com.nat.nexastream.core.tasks.TaskExecutionContext;
-import com.nat.nexastream.core.tasks.TaskPriority;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 
-/**
- * David Briones
- *
- */
-public class App 
-{
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class App implements CommandLineRunner{
 
     public static void main(String[] args) throws IOException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
-
+        SpringApplication.run(App.class, args);
 
         // Crea una instancia de TaskExecutionContext
 //        TaskExecutionContext context = new TaskExecutionContext(packageName);
@@ -52,11 +50,16 @@ public class App
         // Apaga el TaskAssignmentManager
 //        taskAssignmentManager.shutdown();
         // Especifica el nombre del paquete donde se encuentran las tareas anotadas
-        String packageName = "com.nat.nexastream.example.other"; // Reemplaza con el nombre correcto del paquete
 
-        TaskAssignmentManager taskAssignmentManager = new TaskAssignmentManager(packageName);
-        taskAssignmentManager.runNode("exampleNode");
-        taskAssignmentManager.runNode("otherNode");
         //taskAssignmentManager.shutdown();
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+//        String packageName = "com.nat.nexastream.example.other"; // Reemplaza con el nombre correcto del paquete
+//
+//        TaskAssignmentManager taskAssignmentManager = new TaskAssignmentManager(packageName);
+//        taskAssignmentManager.runNode("exampleNode");
+//        taskAssignmentManager.runNode("otherNode");
     }
 }
