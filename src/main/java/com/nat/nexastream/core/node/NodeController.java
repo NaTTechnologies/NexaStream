@@ -1,10 +1,12 @@
 package com.nat.nexastream.core.node;
 
+import com.nat.nexastream.core.tasks.TaskAssignmentManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,10 +20,25 @@ public class NodeController {
     @Autowired
     private Map<String, Node> nodes;
 
+    @Autowired
+    private TaskAssignmentManager taskAssignmentManager;
+
     @PostMapping
     public ResponseEntity<String> registerNode(@RequestBody Node node) {
         nodes.put(node.getId(), node);
         return ResponseEntity.status(HttpStatus.CREATED).body("Node registered successfully.");
+    }
+
+    @PostMapping("/runNode/{nameNode}")
+    public ResponseEntity<String> runNode(@PathVariable String nameNode) {
+        taskAssignmentManager.runNode(nameNode);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Node " + nameNode + " running");
+    }
+
+    @PostMapping("/runTask/{nameTask}")
+    public ResponseEntity<String> runTask(@PathVariable String nameTask) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+        taskAssignmentManager.executeTask(nameTask);
+        return ResponseEntity.status(HttpStatus.CREATED).body("Name task " + nameTask + " running");
     }
 
     @PutMapping("/{id}")

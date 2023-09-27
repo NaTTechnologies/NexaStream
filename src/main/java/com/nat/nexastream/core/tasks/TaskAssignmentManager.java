@@ -17,6 +17,10 @@ public class TaskAssignmentManager {
     private final Map<String, List<TaskMetadata>> nodeTaskMap;
     private final ExecutorService executorService;
 
+    public Map<String, List<TaskMetadata>> getNodeTaskMap() {
+        return nodeTaskMap;
+    }
+
     public TaskAssignmentManager(String packageName)
             throws ClassNotFoundException, IOException, InvocationTargetException, InstantiationException, IllegalAccessException {
         this.taskExecutionContext = new TaskExecutionContext(packageName);
@@ -78,7 +82,7 @@ public class TaskAssignmentManager {
         }
     }
 
-    private void executeTask(String taskName) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+    public void executeTask(String taskName) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
         taskExecutionContext.executeTask(taskName);
         awaitCompletion();
     }

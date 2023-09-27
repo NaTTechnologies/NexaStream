@@ -4,7 +4,7 @@ package com.nat.nexastream.core.tasks;
 import com.nat.nexastream.annotations.distribution.DistributableTask;
 import com.nat.nexastream.annotations.distribution.Node;
 
-class TaskMetadata {
+public class TaskMetadata {
     private String className;
     private String methodName;
     private DistributableTask annotation;
