@@ -25,10 +25,6 @@ public class TaskProcessor {
         // Logica de procesamiento de la tarea
         retry++;
         System.out.println("Entrando en processTask");
-        //System.out.println("Retry: " + retry);
-//        if (retry % 2 == 0){
-//            Thread.sleep(1000);
-//        }
         throw new TemporaryFailureException("Error temporal");
     }
 
