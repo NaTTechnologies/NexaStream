@@ -18,7 +18,7 @@ public class TaskProcessor {
     }
 
     @LoadBalanced
-    @DistributableTask(priority = 50, name = "processTask")
+    @DistributableTask(priority = 50, name = "processTask", dependencies = {"dataFetcher"})
     @RetryableTask(maxRetries = 5, retryDelay = 1000)
     @TaskRetryCondition(conditionClass = CustomRetryCondition.class, retryDelay = 1000)
     public void processTask() throws TemporaryFailureException, InterruptedException {

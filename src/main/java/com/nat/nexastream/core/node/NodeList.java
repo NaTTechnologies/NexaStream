@@ -14,6 +14,9 @@ public class NodeList implements Map<String, Node> {
 
     @Override
     public int size() {
+
+
+
         return this.nodeList.size();
     }
 

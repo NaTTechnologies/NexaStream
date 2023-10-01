@@ -60,11 +60,14 @@ public class TaskExecutionContext {
             if (classpathEntry.endsWith(".jar")) {
                 // Si el elemento del classpath es un archivo JAR
                 try (JarFile jarFile = new JarFile(classpathEntry)) {
+
                     Enumeration<JarEntry> entries = jarFile.entries();
+
                     while (entries.hasMoreElements()) {
                         JarEntry entry = entries.nextElement();
                         if (!entry.isDirectory() && entry.getName().startsWith(path) && entry.getName().endsWith(".class")) {
                             String className = entry.getName().replace('/', '.').replace('\\', '.').replace(".class", "");
+
                             Class<?> clazz = Class.forName(className);
                             if (clazz.isAnnotationPresent(Node.class)) {
                                 Node node = clazz.getAnnotation(Node.class);
