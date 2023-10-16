@@ -31,7 +31,12 @@ public class MyNode {
 }
 ```
 2. Crea métodos en tu clase que realizarán tareas específicas. Estos métodos se marcarán con `@DistributableTask`.
-
+```java
+@DistributableTask(priority = 1, dependencies = {"OtraTarea"})
+public void realizarTarea() {
+    // Lógica de la tarea
+}
+```
 3. Asegúrate de que tu nodo y sus tareas estén disponibles en el paquete escaneado por NexaStream, especificando en el *application.properties*.
 ```properties
 com.nat.nexastream.packageName=com.nat.nexastream.example.other
