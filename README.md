@@ -29,7 +29,7 @@ Nuestro propósito principal en NexaStream es proporcionarte las herramientas y 
 
 ## Comienza con NexaStream
 
-Si eres nuevo en NexaStream, te invitamos a explorar nuestra documentación en nuestro [Wiki](https://github.com/NaTTechnologies/NexaStream/README.md) para obtener información detallada sobre cómo comenzar. Aquí encontrarás guías de instalación, ejemplos de uso y consejos para la implementación.
+Si eres nuevo en NexaStream, te invitamos a explorar nuestra documentación en nuestro [Wiki](WIKI.md) para obtener información detallada sobre cómo comenzar. Aquí encontrarás guías de instalación, ejemplos de uso y consejos para la implementación.
 
 ## Contribuciones
 
