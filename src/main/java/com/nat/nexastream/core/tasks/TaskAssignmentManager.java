@@ -82,9 +82,9 @@ public class TaskAssignmentManager {
         }
     }
 
-    public void executeTask(String taskName) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-        taskExecutionContext.executeTask(taskName);
-        awaitCompletion();
+    public Object executeTask(String taskName) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
+        return taskExecutionContext.executeTask(taskName);
+        //awaitCompletion();
     }
 
     private void awaitCompletion() {

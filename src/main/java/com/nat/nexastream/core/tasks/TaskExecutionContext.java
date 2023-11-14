@@ -131,12 +131,14 @@ public class TaskExecutionContext {
         return taskList;
     }
 
-    public void executeTask(String taskName)
+    public Object executeTask(String taskName)
             throws NoSuchMethodException,
             IllegalAccessException,
             InvocationTargetException,
             ClassNotFoundException,
             InstantiationException {
+        // Objeto a devolver
+        Object object = null;
         // Buscar la tarea por su nombre
         TaskMetadata taskMetadata = findTaskMetadataByName(taskName);
 
@@ -182,7 +184,7 @@ public class TaskExecutionContext {
                     for (int retryCount = 1; retryCount <= maxRetries; retryCount++) {
                         retryCount++;
                         try {
-                            taskMethod.invoke(taskInstance);
+                            object = taskMethod.invoke(taskInstance);
                             break;
                         } catch (Exception e) {
                             // Se produjo una excepción al ejecutar la tarea
@@ -205,7 +207,7 @@ public class TaskExecutionContext {
                 } else {
                     for (int retryCount = 1; retryCount <= maxRetries; retryCount++) {
                         try {
-                            taskMethod.invoke(taskInstance);
+                            object = taskMethod.invoke(taskInstance);
                             taskCompleted = true; // La tarea se ejecutó exitosamente
                             break; // Sal del bucle si la tarea se completó con éxito
                         } catch (Exception e) {
@@ -233,7 +235,7 @@ public class TaskExecutionContext {
             } else {
                 // El método no está anotado con @RetryableTask, ejecutarlo sin reintentos
                 try {
-                    taskMethod.invoke(taskInstance);
+                    object = taskMethod.invoke(taskInstance);
                 } catch (Exception e) {
                     // Manejar excepciones si es necesario
                 }
@@ -241,6 +243,7 @@ public class TaskExecutionContext {
         } else {
             throw new IllegalArgumentException("Tarea no encontrada: " + taskName);
         }
+        return object;
     }
 
     private TaskMetadata findTaskMetadataByName(String taskName) {

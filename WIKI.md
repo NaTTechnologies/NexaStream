@@ -45,7 +45,7 @@ com.nat.nexastream.packageName=com.nat.nexastream.example.other
 
 Para iniciar un nodo, puedes hacerlo a través de la API REST. Puedes utilizar CURL o cualquier otra herramienta similar. Aquí hay un ejemplo usando CURL:
 ```bash
-curl -X POST http://localhost:8080/nodes/runNode/MiNodo
+curl -X POST http://localhost:8080/nodes/run-node/MiNodo
 ```
 Reemplaza `MiNodo` con el nombre del nodo que deseas ejecutar.
 
@@ -53,7 +53,7 @@ Reemplaza `MiNodo` con el nombre del nodo que deseas ejecutar.
 
 Una vez que has iniciado un nodo, puedes ejecutar una tarea específica en ese nodo. Aquí tienes un ejemplo:
 ```bash
-curl -X POST http://localhost:8080/nodes/runTask/realizarTarea
+curl -X POST http://localhost:8080/nodes/run-task/realizarTarea
 ```
 Reemplaza `realizarTarea` con el nombre de la tarea que deseas ejecutar.
 

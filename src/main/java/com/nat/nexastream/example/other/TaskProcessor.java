@@ -3,7 +3,7 @@ package com.nat.nexastream.example.other;
 import com.nat.nexastream.annotations.distribution.*;
 import com.nat.nexastream.example.condition.CustomRetryCondition;
 import com.nat.nexastream.exceptions.TemporaryFailureException;
-import rx.Observable;
+import io.reactivex.rxjava3.core.Observable;
 
 @Node(name = "exampleNode")
 public class TaskProcessor {
