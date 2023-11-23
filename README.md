@@ -35,6 +35,21 @@ Si eres nuevo en NexaStream, te invitamos a explorar nuestra documentación en n
 
 NexaStream es un proyecto de código abierto y estamos emocionados de recibir contribuciones de la comunidad. Si tienes ideas, correcciones o características que te gustaría aportar, por favor consulta nuestra [Guía de Contribución](CONTRIBUTION.md) para obtener más detalles sobre cómo colaborar.
 
+## ¡Participa en Nuestra Encuesta!
+
+Nos encantaría conocer tu experiencia y perspectiva sobre la integración de NexaStream con entornos de desarrollo existentes. Tu opinión es crucial para mejorar la plataforma y adaptarla aún mejor a tus necesidades.
+
+### ¿Cómo puedes contribuir?
+Te invitamos a participar en nuestra [encuesta sobre integración con entornos de desarrollo](https://forms.gle/wj91QUmxi2CMEdsk9). Es una oportunidad para compartir tus experiencias, sugerencias y ayudarnos a entender cómo NexaStream puede optimizar tus flujos de trabajo actuales.
+
+[¡Contestar encuesta!](https://forms.gle/wj91QUmxi2CMEdsk9)
+
+### ¿Por qué participar?
+Impacta en el Futuro: Tus respuestas influyen en las futuras mejoras y desarrollos de NexaStream.
+Colaboración Constructiva: Comparte tus desafíos y sugerencias para una colaboración más efectiva.
+Comunidad en Crecimiento: Únete a otros desarrolladores y forma parte activa de la comunidad NexaStream.
+¡Esperamos contar con tu valiosa contribución para hacer de NexaStream una herramienta aún más poderosa y adaptada a tus necesidades específicas!
+
 ¡Gracias por unirte a la comunidad de NexaStream!
 
 [Website de NaT](https://www.nattechnologiesagency.com/) | [Documentación](WIKI.md)
