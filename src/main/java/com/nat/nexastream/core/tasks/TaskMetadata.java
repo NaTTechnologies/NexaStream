@@ -1,16 +1,23 @@
 package com.nat.nexastream.core.tasks;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat.nexastream.annotations.distribution.DistributableTask;
 import com.nat.nexastream.annotations.distribution.Node;
 
+import java.util.UUID;
+
 public class TaskMetadata {
+    private String id = UUID.randomUUID().toString().replace("-", "");
     private String className;
     private String methodName;
-    private DistributableTask annotation;
 
+    @JsonIgnore
+    private DistributableTask annotation;
+    @JsonIgnore
     private Node node;
 
+    @JsonIgnore
     private String classNameNode;
 
     private String taskName;
@@ -73,5 +80,13 @@ public class TaskMetadata {
 
     public void setClassNameNode(String classNameNode) {
         this.classNameNode = classNameNode;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

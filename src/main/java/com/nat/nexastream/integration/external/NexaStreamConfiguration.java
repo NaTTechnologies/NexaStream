@@ -12,13 +12,9 @@ import org.springframework.context.annotation.Scope;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
-import java.util.Enumeration;
 
 @Configuration
 public class NexaStreamConfiguration {
@@ -55,6 +51,11 @@ public class NexaStreamConfiguration {
                     node.setId(UUID.randomUUID().toString().replace("-", ""));
                     node.setName(s);
                     node.setIp(finalIp);
+                    node.setTasks(taskMetadata);
+
+                    //Pendiente agregar las instances
+                    //node.setInstances(Arrays.asList(node));
+
                     nodes.put(s, node);
                 });
 

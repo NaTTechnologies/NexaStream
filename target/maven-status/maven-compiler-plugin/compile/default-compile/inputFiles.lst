@@ -1,29 +1,39 @@
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\example\other\OtherTaskProcesor.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\DistributableTask.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\App.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\NodeExclusive.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\core\node\Node.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\integration\external\NexaStreamConfiguration.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\TaskTimeout.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\example\news\NewsAnalyzer.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\CriticalTask.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\RetryableTask.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\core\tasks\TaskMetadata.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\core\tasks\TaskExecutionContext.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\exceptions\TaskTimeoutException.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\core\node\NodeList.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\InjectDependency.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\CustomDistributionStrategy.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\Node.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\core\tasks\TaskAssignmentManager.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\example\other\TaskProcessor.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\exceptions\TemporaryFailureException.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\TaskDependency.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\CustomTask.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\LoadBalanced.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\TaskRetryCondition.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\core\tasks\TaskPriority.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\DataDependency.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\example\condition\CustomRetryCondition.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\example\other\DataProcessor.java
-C:\Users\50488\Documents\Proyectos\Nat Technologies\NexaStream\src\main\java\com\nat\nexastream\integration\external\NodeManager.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\LoadBalanced.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\model\Guid.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\other\OtherTaskProcesor.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\model\Excerpt.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\model\Links.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\CustomDistributionStrategy.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\integration\external\NodeManager.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\model\Content.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\integration\external\configuration\WebSocketConfig.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\core\tasks\TaskPriority.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\integration\external\SocketNodeManager.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\other\DataProcessor.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\TaskDependency.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\core\node\NodeList.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\model\Link.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\model\Meta.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\TaskRetryCondition.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\Node.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\CustomTask.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\DataDependency.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\TaskTimeout.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\other\TaskProcessor.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\RetryableTask.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\InjectDependency.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\App.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\core\node\Node.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\NewsAnalyzer.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\core\tasks\TaskExecutionContext.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\exceptions\TaskTimeoutException.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\CriticalTask.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\core\tasks\TaskMetadata.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\condition\CustomRetryCondition.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\model\Post.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\exceptions\TemporaryFailureException.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\DistributableTask.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\annotations\distribution\NodeExclusive.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\integration\external\NexaStreamConfiguration.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\example\news\model\Title.java
+C:\Users\Cristian\Desktop\NexaStream\src\main\java\com\nat\nexastream\core\tasks\TaskAssignmentManager.java
