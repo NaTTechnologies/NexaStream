@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nat.nexastream.annotations.distribution.DistributableTask;
 import com.nat.nexastream.annotations.distribution.Node;
 
+import java.lang.reflect.Method;
 import java.util.UUID;
 
 public class TaskMetadata {
@@ -20,17 +21,29 @@ public class TaskMetadata {
     @JsonIgnore
     private String classNameNode;
 
+    @JsonIgnore
+    private Method method;
+
     private String taskName;
 
     public TaskMetadata(String className, String methodName,
                         DistributableTask annotation, Node node,
-                        String classNameNode) {
+                        String classNameNode, Method methodObject) {
         this.className = className;
         this.methodName = methodName;
         this.annotation = annotation;
         this.node = node;
         this.classNameNode = classNameNode;
         this.taskName = annotation.name();
+        this.method = methodObject;
+    }
+
+    public Method getMethod() {
+        return method;
+    }
+
+    public void setMethod(Method method) {
+        this.method = method;
     }
 
     public String getTaskName() {

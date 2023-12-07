@@ -39,7 +39,7 @@ public class NodeManager {
     public @ResponseBody ResponseEntity<Object> runTask(@PathVariable String nameTask)
             throws ClassNotFoundException, InvocationTargetException,
             NoSuchMethodException, IllegalAccessException, InstantiationException {
-        return ResponseEntity.status(HttpStatus.CREATED).body( taskAssignmentManager.executeTask(nameTask));
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskAssignmentManager.executeTask(nameTask));
     }
 
     @PutMapping("/{id}")

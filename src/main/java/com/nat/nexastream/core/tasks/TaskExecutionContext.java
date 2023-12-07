@@ -77,7 +77,7 @@ public class TaskExecutionContext {
                                 for (Method method : methods) {
                                     if (method.isAnnotationPresent(DistributableTask.class)) {
                                         DistributableTask annotation = method.getAnnotation(DistributableTask.class);
-                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName());
+                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName(), method);
                                         taskList.add(metadata);
                                     }
 
@@ -112,7 +112,7 @@ public class TaskExecutionContext {
                                 for (Method method : methods) {
                                     if (method.isAnnotationPresent(DistributableTask.class)) {
                                         DistributableTask annotation = method.getAnnotation(DistributableTask.class);
-                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName());
+                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName(), method);
                                         taskList.add(metadata);
                                     }
 
@@ -145,8 +145,10 @@ public class TaskExecutionContext {
         if (taskMetadata != null) {
             DistributableTask distributableTask = taskMetadata.getAnnotation();
 
+            Map<String, Object> returns = new HashMap<>();
+
             for (String dependency : distributableTask.dependencies()) {
-                executeTask(dependency);
+                returns.put(dependency, executeTask(dependency));
             }
 
             // Obtener información de la tarea
@@ -158,7 +160,8 @@ public class TaskExecutionContext {
             Object taskInstance = taskClass.newInstance();
 
             // Verificar si el método está anotado con @RetryableTask
-            Method taskMethod = taskClass.getMethod(methodName);
+            //Method taskMethod = taskClass.getMethod(methodName);
+            Method taskMethod = taskMetadata.getMethod();
 
             Field[] fields = taskClass.getDeclaredFields();
 
@@ -184,7 +187,7 @@ public class TaskExecutionContext {
                     for (int retryCount = 1; retryCount <= maxRetries; retryCount++) {
                         retryCount++;
                         try {
-                            object = taskMethod.invoke(taskInstance);
+                            object = this.executeTask(taskMethod, taskInstance, returns);
                             break;
                         } catch (Exception e) {
                             // Se produjo una excepción al ejecutar la tarea
@@ -207,7 +210,7 @@ public class TaskExecutionContext {
                 } else {
                     for (int retryCount = 1; retryCount <= maxRetries; retryCount++) {
                         try {
-                            object = taskMethod.invoke(taskInstance);
+                            object = this.executeTask(taskMethod, taskInstance, returns);
                             taskCompleted = true; // La tarea se ejecutó exitosamente
                             break; // Sal del bucle si la tarea se completó con éxito
                         } catch (Exception e) {
@@ -235,7 +238,7 @@ public class TaskExecutionContext {
             } else {
                 // El método no está anotado con @RetryableTask, ejecutarlo sin reintentos
                 try {
-                    object = taskMethod.invoke(taskInstance);
+                    object = this.executeTask(taskMethod, taskInstance, returns);
                 } catch (Exception e) {
                     // Manejar excepciones si es necesario
                 }
@@ -295,5 +298,22 @@ public class TaskExecutionContext {
 
     public void setTaskMetadataMap(Map<String, TaskMetadata> taskMetadataMap) {
         this.taskMetadataMap = taskMetadataMap;
+    }
+
+    private Object executeTask(Method taskMethod, Object taskInstance, Map<String, Object> returns)
+            throws InvocationTargetException, IllegalAccessException {
+        Object object = null;
+        taskMethod.setAccessible(true);
+        if (taskMethod.getParameterTypes().length == 1
+                && taskMethod.getParameterTypes()[0].isAssignableFrom(Map.class)){
+            Map<String, Object> params = new HashMap<>();
+            if (taskMethod.getParameterTypes().length == 1) {
+                params.putAll(returns);
+            }
+            object = taskMethod.invoke(taskInstance, params);
+        } else {
+            object = taskMethod.invoke(taskInstance);
+        }
+        return object;
     }
 }

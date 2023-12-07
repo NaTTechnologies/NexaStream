@@ -90,17 +90,24 @@ public class NewsAnalyzer {
 
     public int count = 0;
 
-    @DistributableTask(name = "analyze-data")
-    public Iterable<List<Map<String, Map<String, Integer>>>> analyzeData() {
+    @DistributableTask(name = "greeting")
+    public String greeting(){
+        return "Hello World!";
+    }
+
+    @DistributableTask(name = "analyze-data", dependencies = {"greeting"})
+    public Iterable<List<Map<String, Map<String, Integer>>>> analyzeData(Map<String, Object> returnValues) {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         objectMapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
         SimpleDateFormat simpleDateFormatTo = new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-        File file = new File("data/");
-        file.mkdirs();
+//        File file = new File("data/");
+//        file.mkdirs();
 
+        System.out.println("Cantidad de dependencias: " + returnValues.size());
+        System.out.println("Valor de la dependencia greeting: " + returnValues.get("greeting"));
         return data
                 .map(list -> {
                     return list
