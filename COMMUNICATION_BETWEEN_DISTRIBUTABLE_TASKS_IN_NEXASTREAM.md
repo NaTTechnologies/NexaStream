@@ -35,6 +35,30 @@ public Iterable<List<Map<String, Map<String, Integer>>>> analyzeData(Map<String,
 ```
 ¡Explora las posibilidades infinitas de coordinación entre tareas distribuibles en NexaStream y lleva tus flujos de trabajo al siguiente nivel!
 
+## Ejemplo de guardado de news-analyzer
+
+En esta ocasion trabajaremos un poco con una tarea en la que se procesan los datos y luego en otra funcion se persisten los datos
+
+```java
+@DistributableTask(name = "on-save", dependencies = {"analyze-data"})
+public Iterable<List<Map<String, Map<String, Integer>>>> onSave(Map<String, Object> returnValues){
+        Iterable<List<Map<String, Map<String, Integer>>>> data = (Iterable<List<Map<String, Map<String, Integer>>>>) returnValues.get("analyze-data");
+        data
+                .forEach(maps -> {
+                    // Objeto ObjectMapper de Jackson
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    try {
+                        // Convierte el objeto 'data' a formato JSON y lo guarda en un archivo
+                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("data.json"), data);
+
+                        System.out.println("Datos guardados exitosamente en 'data.json'");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+        return data;
+}
+```
 ## Contribuciones
 
 NexaStream es un proyecto de código abierto y estamos emocionados de recibir contribuciones de la comunidad. Si tienes ideas, correcciones o características que te gustaría aportar, por favor consulta nuestra [Guía de Contribución](CONTRIBUTION.md) para obtener más detalles sobre cómo colaborar.

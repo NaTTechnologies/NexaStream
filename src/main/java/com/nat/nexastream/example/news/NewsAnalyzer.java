@@ -92,7 +92,7 @@ public class NewsAnalyzer {
 
     @DistributableTask(name = "greeting")
     public String greeting(){
-        return "Hello World!";
+        return "Hello World! NexaStream";
     }
 
     @DistributableTask(name = "analyze-data", dependencies = {"greeting"})
@@ -175,6 +175,25 @@ public class NewsAnalyzer {
 //                        e.printStackTrace();
 //                    }
 //                });
+    }
+
+    @DistributableTask(name = "on-save", dependencies = {"analyze-data"})
+    public Iterable<List<Map<String, Map<String, Integer>>>> onSave(Map<String, Object> returnValues){
+        Iterable<List<Map<String, Map<String, Integer>>>> data = (Iterable<List<Map<String, Map<String, Integer>>>>) returnValues.get("analyze-data");
+        data
+                .forEach(maps -> {
+                    // Objeto ObjectMapper de Jackson
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    try {
+                        // Convierte el objeto 'data' a formato JSON y lo guarda en un archivo
+                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("data.json"), data);
+
+                        System.out.println("Datos guardados exitosamente en 'data.json'");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+        return data;
     }
 
 

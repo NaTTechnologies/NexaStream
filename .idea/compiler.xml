@@ -7,14 +7,13 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="nexa-stream" />
+        <module name="NexaStream" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="NexaStream" target="1.5" />
-    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="NexaStream" options="-parameters" />
       <module name="nexa-stream" options="-parameters" />
     </option>
   </component>
