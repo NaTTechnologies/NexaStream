@@ -1,5 +1,9 @@
 package com.nat.nexastream.core.node;
 
+import com.nat.nexastream.core.tasks.TaskMetadata;
+
+import java.util.List;
+
 public class Node {
     private String id;
     private String name;
@@ -7,9 +11,31 @@ public class Node {
 
     private String ip;
 
-    private String username;
+    private int port = 8080;
 
-    private String password;
+    private String username = "admin";
+
+    private String password = "1234";
+
+    private List<TaskMetadata> tasks;
+
+    private List<Node> instances;
+
+    public List<Node> getInstances() {
+        return instances;
+    }
+
+    public void setInstances(List<Node> instances) {
+        this.instances = instances;
+    }
+
+    public List<TaskMetadata> getTasks() {
+        return tasks;
+    }
+
+    public void setTasks(List<TaskMetadata> tasks) {
+        this.tasks = tasks;
+    }
 
     public String getIp() {
         return ip;
@@ -59,5 +85,13 @@ public class Node {
 
     public void setResources(int resources) {
         this.resources = resources;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 }

@@ -29,16 +29,17 @@ public class NodeManager {
         return ResponseEntity.status(HttpStatus.CREATED).body("Node registered successfully.");
     }
 
-    @PostMapping("/runNode/{nameNode}")
+    @PostMapping("/run-node/{nameNode}")
     public ResponseEntity<String> runNode(@PathVariable String nameNode) {
         taskAssignmentManager.runNode(nameNode);
         return ResponseEntity.status(HttpStatus.CREATED).body("Node " + nameNode + " running");
     }
 
-    @PostMapping("/runTask/{nameTask}")
-    public ResponseEntity<String> runTask(@PathVariable String nameTask) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {
-        taskAssignmentManager.executeTask(nameTask);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Name task " + nameTask + " running");
+    @PostMapping("/run-task/{nameTask}")
+    public @ResponseBody ResponseEntity<Object> runTask(@PathVariable String nameTask)
+            throws ClassNotFoundException, InvocationTargetException,
+            NoSuchMethodException, IllegalAccessException, InstantiationException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskAssignmentManager.executeTask(nameTask));
     }
 
     @PutMapping("/{id}")

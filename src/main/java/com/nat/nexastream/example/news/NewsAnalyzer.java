@@ -1,20 +1,41 @@
-package com.nat.nexastream.example.rrss;
+package com.nat.nexastream.example.news;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.nat.nexastream.annotations.distribution.Node;
 import com.nat.nexastream.annotations.distribution.*;
+import com.nat.nexastream.example.news.model.Post;
+import io.reactivex.rxjava3.core.Observable;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import rx.Observable;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Node(name = "news-analyzer")
 public class NewsAnalyzer {
+    public NewsAnalyzer() {
+    }
 
     @InjectDependency(name = "data")
-    public Observable<String> data;
+    public Observable<List> data;
+
+    public static final int entries = 5;
 
     @DataDependency(dataKey = "data")
-    public Observable<String> getData() {
+    public Observable<List> getData() {
+        ObjectMapper objectMapper = new ObjectMapper();
         // Crear un cliente OkHttp para hacer la solicitud a la API de WordPress
         OkHttpClient client = new OkHttpClient();
 
@@ -25,8 +46,12 @@ public class NewsAnalyzer {
             String nextPageUrl = apiUrl;
             boolean hasMoreData = true;
 
+            int count = 0;
+
             while (hasMoreData) {
                 try {
+                    count++;
+                    System.out.println("Data encontred");
                     // Crear una solicitud GET
                     Request request = new Request.Builder()
                             .url(nextPageUrl)
@@ -38,12 +63,13 @@ public class NewsAnalyzer {
                     // Verificar si la solicitud fue exitosa
                     if (response.isSuccessful()) {
                         String responseBody = response.body().string();
-                        System.out.println(responseBody);
-                        emitter.onNext(responseBody); // Emitir los datos obtenidos
+//                        System.out.println(responseBody);
+                        emitter.onNext(objectMapper.readValue(responseBody, List.class)); // Emitir los datos obtenidos
 
                         // Verificar si hay más paginas disponibles en la respuesta
                         String linkHeader = response.header("Link");
-                        if (linkHeader != null && linkHeader.contains("rel=\"next\"")) {
+                        // (linkHeader != null && linkHeader.contains("rel=\"next\""))
+                        if (count < entries) {
                             int startIndex = linkHeader.indexOf('<');
                             int endIndex = linkHeader.indexOf('>');
                             nextPageUrl = linkHeader.substring(startIndex + 1, endIndex);
@@ -58,35 +84,116 @@ public class NewsAnalyzer {
                 }
             }
 
-            emitter.onCompleted(); // Marcar la finalización del flujo de datos
+            emitter.onComplete(); // Marcar la finalización del flujo de datos
         });
     }
 
-    @DistributableTask
-    public void analyzeData(TaskExecutionContext context) {
-        // Obtiene el contenido de texto del campo "content" de los datos
-        String content = "Los goles de Nathan Aké, Phil Foden y Erling Haaland, que ya suma 35 dianas en una sola temporada, más que nadie en la historia de la Premier League, devuelven al Manchester City al liderato de la liga tras el triunfo ante el West Ham United (3-0).";
+    public int count = 0;
 
-        // Realiza el procesamiento del contenido para contar las palabras
-        String[] words = content.split("\\s+"); // Dividir el texto en palabras
-        Map<String, Integer> wordCount = new HashMap<>();
+    @DistributableTask(name = "greeting")
+    public String greeting(){
+        return "Hello World! NexaStream";
+    }
 
-        for (String word : words) {
-            // Elimina signos de puntuación y convierte a minúsculas
-            word = word.replaceAll("[^a-zA-Z]", "").toLowerCase();
+    @DistributableTask(name = "analyze-data", dependencies = {"greeting"})
+    public Iterable<List<Map<String, Map<String, Integer>>>> analyzeData(Map<String, Object> returnValues) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.setVisibility(VisibilityChecker.Std.defaultInstance().withFieldVisibility(JsonAutoDetect.Visibility.ANY));
+        SimpleDateFormat simpleDateFormatTo = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-            // Actualiza el conteo de palabras
-            if (!word.isEmpty()) {
-                wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
-            }
-        }
+//        File file = new File("data/");
+//        file.mkdirs();
 
-        // Emite el resultado en forma de tabla
-        for (Map.Entry<String, Integer> entry : wordCount.entrySet()) {
-            String word = entry.getKey();
-            int count = entry.getValue();
-            context.log(String.format("Palabra: %s, Frecuencia: %d", word, count));
-        }
+        System.out.println("Cantidad de dependencias: " + returnValues.size());
+        System.out.println("Valor de la dependencia greeting: " + returnValues.get("greeting"));
+        return data
+                .map(list -> {
+                    return list
+                            .stream()
+                            .map(o -> {
+                                return objectMapper.convertValue(o, Post.class);
+                            }).collect(Collectors.toList());
+                })
+                .map(list -> {
+                    List<Post> dataList = (List<Post>) list;
+                    List<Map<String, Map<String, Integer>>> maps = new ArrayList<>();
+
+                    dataList.forEach(post -> {
+                        Map<String, Map<String, Integer>> dataPost = new HashMap<>();
+
+                        String content = post.getContent().getRendered();
+                        String[] words = content.split("\\s+"); // Dividir el texto en palabras
+                        Map<String, Integer> wordCount = new HashMap<>();
+
+                        for (String word : words) {
+                            // Elimina signos de puntuación y convierte a minusculas
+                            word = word.replaceAll("[^a-zA-Z]", "").toLowerCase();
+
+                            // Actualiza el conteo de palabras
+                            if (!word.isEmpty()) {
+                                wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+                            }
+                        }
+
+                        //Agregamos al nuevo mapa
+                        //dataPost.put(simpleDateFormat.format(post.getDate()), wordCount);
+                        try {
+                            dataPost.put(simpleDateFormatTo.format(simpleDateFormat.parse(post.getDate())), wordCount);
+                        } catch (ParseException e) {
+                            throw new RuntimeException(e);
+                        }
+                        maps.add(dataPost);
+                    });
+
+                    return maps;
+                })
+                .blockingIterable(entries);
+//                .subscribe(list -> {
+//                    list.forEach(stringMapMap -> {
+//                        System.out.println("SWITCH");
+//
+//                        stringMapMap.forEach((s, stringIntegerMap) -> {
+//                            // Emite el resultado en forma de tabla
+//                            for (Map.Entry<String, Integer> entry : stringIntegerMap.entrySet()) {
+//                                String word = entry.getKey();
+//                                int count = entry.getValue();
+//
+//                                // Palabra
+//                                System.out.println(String.format("Palabra: %s, Frecuencia: %d", word, count));
+//                            }
+//                        });
+//                    });
+//
+//                    count++;
+//                    try {
+//                        // Escribir el List<Map> en un archivo JSON
+//                        objectMapper.writeValue(new File("data/file_" + count + ".json"), list);
+//                        System.out.println("Datos guardados en " + "data/file_" + count + ".json");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
+    }
+
+    @DistributableTask(name = "on-save", dependencies = {"analyze-data"})
+    public Iterable<List<Map<String, Map<String, Integer>>>> onSave(Map<String, Object> returnValues){
+        Iterable<List<Map<String, Map<String, Integer>>>> data = (Iterable<List<Map<String, Map<String, Integer>>>>) returnValues.get("analyze-data");
+        data
+                .forEach(maps -> {
+                    // Objeto ObjectMapper de Jackson
+                    ObjectMapper objectMapper = new ObjectMapper();
+                    try {
+                        // Convierte el objeto 'data' a formato JSON y lo guarda en un archivo
+                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("data.json"), data);
+
+                        System.out.println("Datos guardados exitosamente en 'data.json'");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+        return data;
     }
 
 
