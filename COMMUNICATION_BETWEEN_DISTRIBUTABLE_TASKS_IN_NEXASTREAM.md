@@ -11,13 +11,13 @@ public Iterable<List<Map<String, Map<String, Integer>>>> analyzeData(Map<String,
 }
 ```
 
-El Mapa de Retorno (returnValues)
+## El Mapa de Retorno (returnValues)
 El parámetro returnValues es un mapa donde cada clave representa el nombre de una tarea de la que depende la tarea actual, y el valor es el resultado devuelto por esa tarea. Esto facilita la comunicación y el intercambio de datos entre tareas distribuibles.
 
-Coordinación de Tareas
+## Coordinación de Tareas
 Con esta capacidad de comunicación, puedes coordinar tareas distribuibles de manera efectiva. Cada tarea puede acceder a los resultados de las tareas de las que depende, permitiendo flujos de trabajo más complejos y una programación distribuida más potente.
 
-Ejemplo Práctico
+## Ejemplo Práctico
 Supongamos que tienes una tarea "greeting" que saluda y devuelve un mensaje. Puedes utilizar este mensaje en la tarea "analyze-data" para personalizar la análisis de datos.
 
 ```java
