@@ -1,9 +1,11 @@
 package com.nat.nexastream.core.tasks;
 
 import com.nat.nexastream.annotations.distribution.*;
+import io.jactl.Jactl;
+import io.jactl.JactlContext;
+import io.jactl.JactlScript;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -22,9 +24,12 @@ public class TaskExecutionContext {
     private List<TaskMetadata> taskMetadataList;
     private Map<String, TaskMetadata> taskMetadataMap;
 
+    private JactlContext jactlContextEngine;
+
     private Map<String, Object> dependecies;
 
     public TaskExecutionContext(String packageName) {
+        this.jactlContextEngine = JactlContext.create().build();
         dependecies = new HashMap<>();
         // Escanear el paquete y buscar tareas anotadas
         try {
@@ -77,7 +82,7 @@ public class TaskExecutionContext {
                                 for (Method method : methods) {
                                     if (method.isAnnotationPresent(DistributableTask.class)) {
                                         DistributableTask annotation = method.getAnnotation(DistributableTask.class);
-                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName(), method);
+                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName(), method, annotation.enviroment());
                                         taskList.add(metadata);
                                     }
 
@@ -104,7 +109,7 @@ public class TaskExecutionContext {
                         if (file.isFile() && file.getName().endsWith(".class")) {
                             String className = packageName + "." + file.getName().replace(".class", "");
                             Class<?> clazz = Class.forName(className);
-                            Object nodeInstance = clazz.newInstance();
+
                             if (clazz.isAnnotationPresent(Node.class)) {
                                 Node node = clazz.getAnnotation(Node.class);
                                 // La clase está anotada con @Node, examinar sus métodos
@@ -112,12 +117,13 @@ public class TaskExecutionContext {
                                 for (Method method : methods) {
                                     if (method.isAnnotationPresent(DistributableTask.class)) {
                                         DistributableTask annotation = method.getAnnotation(DistributableTask.class);
-                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName(), method);
+                                        TaskMetadata metadata = new TaskMetadata(className, method.getName(), annotation, node, clazz.getName(), method, annotation.enviroment());
                                         taskList.add(metadata);
                                     }
 
                                     if (method.isAnnotationPresent(DataDependency.class)){
                                         DataDependency dataDependency = method.getAnnotation(DataDependency.class);
+                                        Object nodeInstance = clazz.newInstance();
                                         dependecies.put(dataDependency.dataKey(), method.invoke(nodeInstance));
                                     }
                                 }
@@ -157,20 +163,23 @@ public class TaskExecutionContext {
 
             // Utilizar reflexión para ejecutar la tarea
             Class<?> taskClass = Class.forName(className);
-            Object taskInstance = taskClass.newInstance();
 
             // Verificar si el método está anotado con @RetryableTask
             //Method taskMethod = taskClass.getMethod(methodName);
             Method taskMethod = taskMetadata.getMethod();
+            Object taskInstance = null;
 
-            Field[] fields = taskClass.getDeclaredFields();
+            if (!taskClass.isInterface()){
+                taskInstance = taskClass.newInstance();
+                Field[] fields = taskClass.getDeclaredFields();
 
-            for(Field field: fields){
-                if (field.isAnnotationPresent(InjectDependency.class)){
-                    InjectDependency injectDependency = field.getDeclaredAnnotation(InjectDependency.class);
+                for(Field field: fields){
+                    if (field.isAnnotationPresent(InjectDependency.class)){
+                        InjectDependency injectDependency = field.getDeclaredAnnotation(InjectDependency.class);
 
-                    field.setAccessible(true);
-                    field.set(taskInstance, dependecies.get(injectDependency.name()));
+                        field.setAccessible(true);
+                        field.set(taskInstance, dependecies.get(injectDependency.name()));
+                    }
                 }
             }
 
@@ -187,12 +196,16 @@ public class TaskExecutionContext {
                     for (int retryCount = 1; retryCount <= maxRetries; retryCount++) {
                         retryCount++;
                         try {
-                            object = this.executeTask(taskMethod, taskInstance, returns);
+                            if (distributableTask.enviroment().name().equalsIgnoreCase(DistributableTask.Enviroment.JAVA.name())){
+                                object = executeTaskNativeMethod(taskMethod, taskInstance, returns);
+                            } else {
+                                object = executeTaskHybridMethod(taskMetadata, returns);
+                            }
                             break;
                         } catch (Exception e) {
                             // Se produjo una excepción al ejecutar la tarea
                             this.lastException = e.getCause();
-                            System.err.println("Excepción al ejecutar la tarea. Reintentando... ");
+                            System.err.println("Excepción al ejecutar la tarea. Reintentando...");
 
                             if (condition.shouldRetry(this, (Exception) e.getCause())){
                                 // Espera antes de reintentar
@@ -210,7 +223,11 @@ public class TaskExecutionContext {
                 } else {
                     for (int retryCount = 1; retryCount <= maxRetries; retryCount++) {
                         try {
-                            object = this.executeTask(taskMethod, taskInstance, returns);
+                            if (distributableTask.enviroment().name().equalsIgnoreCase(DistributableTask.Enviroment.JAVA.name())){
+                                object = executeTaskNativeMethod(taskMethod, taskInstance, returns);
+                            } else {
+                                object = executeTaskHybridMethod(taskMetadata, returns);
+                            }
                             taskCompleted = true; // La tarea se ejecutó exitosamente
                             break; // Sal del bucle si la tarea se completó con éxito
                         } catch (Exception e) {
@@ -238,9 +255,14 @@ public class TaskExecutionContext {
             } else {
                 // El método no está anotado con @RetryableTask, ejecutarlo sin reintentos
                 try {
-                    object = this.executeTask(taskMethod, taskInstance, returns);
+                    if (distributableTask.enviroment().name().equalsIgnoreCase(DistributableTask.Enviroment.JAVA.name())){
+                        object = executeTaskNativeMethod(taskMethod, taskInstance, returns);
+                    } else {
+                        object = executeTaskHybridMethod(taskMetadata, returns);
+                    }
                 } catch (Exception e) {
                     // Manejar excepciones si es necesario
+                    e.printStackTrace();
                 }
             }
         } else {
@@ -300,7 +322,7 @@ public class TaskExecutionContext {
         this.taskMetadataMap = taskMetadataMap;
     }
 
-    private Object executeTask(Method taskMethod, Object taskInstance, Map<String, Object> returns)
+    private Object executeTaskNativeMethod(Method taskMethod, Object taskInstance, Map<String, Object> returns)
             throws InvocationTargetException, IllegalAccessException {
         Object object = null;
         taskMethod.setAccessible(true);
@@ -314,6 +336,31 @@ public class TaskExecutionContext {
         } else {
             object = taskMethod.invoke(taskInstance);
         }
+        return object;
+    }
+
+    private Object executeTaskHybridMethod(TaskMetadata metadata, Map<String, Object> returns)
+            throws IOException {
+        Object object = null;
+        // Carga el script desde resources
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("script/" + metadata.getNode().name() + "/" + metadata.getTaskName() + ".jactl");
+
+        // Comprueba si el script se ha encontrado
+        if (inputStream == null) {
+            throw new RuntimeException("El script no se ha encontrado");
+        }
+
+        // Lee el contenido del script
+        byte[] bytes = inputStream.readAllBytes();
+
+            // Mapa de variables globales
+        Map<String, Object> globals = new HashMap<>();
+        globals.put("returnValues", returns);
+
+        // Compila el script
+        JactlScript compileScript =
+                Jactl.compileScript(new String(bytes), globals, jactlContextEngine);
+        object = compileScript.runSync(globals);
         return object;
     }
 }

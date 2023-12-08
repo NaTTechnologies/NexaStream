@@ -30,9 +30,8 @@ public class NodeManager {
     }
 
     @PostMapping("/run-node/{nameNode}")
-    public ResponseEntity<String> runNode(@PathVariable String nameNode) {
-        taskAssignmentManager.runNode(nameNode);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Node " + nameNode + " running");
+    public ResponseEntity<Map<String, Object>> runNode(@PathVariable String nameNode) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(taskAssignmentManager.runNode(nameNode));
     }
 
     @PostMapping("/run-task/{nameTask}")

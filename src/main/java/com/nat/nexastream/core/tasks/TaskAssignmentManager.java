@@ -41,8 +41,9 @@ public class TaskAssignmentManager {
         executorService = Executors.newFixedThreadPool(numThreads);
     }
 
-    public void runNode(String nodeName) {
+    public Map<String, Object> runNode(String nodeName) {
         List<TaskMetadata> tasks = nodeTaskMap.get(nodeName);
+        HashMap<String, Object> returns = new HashMap<>();
 
         if (tasks != null) {
             tasks.sort(Comparator.comparingInt(value -> ((TaskMetadata) value).getAnnotation().priority()).reversed());
@@ -53,7 +54,7 @@ public class TaskAssignmentManager {
                     // Ejecuta la tarea con reintentos si es necesario
 
                     try {
-                        executeTask(taskName);
+                        returns.put(taskName, executeTask(taskName));
 
                     } catch (ClassNotFoundException e) {
                         e.printStackTrace();
@@ -80,6 +81,8 @@ public class TaskAssignmentManager {
         } else {
             System.err.println("No se encontraron tareas para el nodo: " + nodeName);
         }
+
+        return returns;
     }
 
     public Object executeTask(String taskName) throws ClassNotFoundException, InvocationTargetException, NoSuchMethodException, IllegalAccessException, InstantiationException {

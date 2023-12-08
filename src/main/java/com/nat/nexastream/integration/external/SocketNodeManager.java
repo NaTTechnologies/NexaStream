@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.Map;
 
 @Controller
 //@RequestMapping("/node-socket")
@@ -33,9 +34,8 @@ public class SocketNodeManager {
     // Maneja los mensajes para ejecutar un nodo
     @MessageMapping("/run-node/{nameNode}")
     @SendTo("/topic/node-running")
-    public String runNode(@PathVariable String nameNode) {
-        taskAssignmentManager.runNode(nameNode);
-        return "Node " + nameNode + " running";
+    public Map<String, Object> runNode(@PathVariable String nameNode) {
+        return  taskAssignmentManager.runNode(nameNode);
     }
 
     // Maneja los mensajes para ejecutar una tarea

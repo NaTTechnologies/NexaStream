@@ -26,9 +26,19 @@ public class TaskMetadata {
 
     private String taskName;
 
+    private DistributableTask.Enviroment enviroment;
+
+    public DistributableTask.Enviroment getEnviroment() {
+        return enviroment;
+    }
+
+    public void setEnviroment(DistributableTask.Enviroment enviroment) {
+        this.enviroment = enviroment;
+    }
+
     public TaskMetadata(String className, String methodName,
                         DistributableTask annotation, Node node,
-                        String classNameNode, Method methodObject) {
+                        String classNameNode, Method methodObject, DistributableTask.Enviroment enviroment) {
         this.className = className;
         this.methodName = methodName;
         this.annotation = annotation;
@@ -36,6 +46,7 @@ public class TaskMetadata {
         this.classNameNode = classNameNode;
         this.taskName = annotation.name();
         this.method = methodObject;
+        this.enviroment = enviroment;
     }
 
     public Method getMethod() {

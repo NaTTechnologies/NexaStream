@@ -177,6 +177,27 @@ Ajusta la ruta /app/remove-node/{nodeId} según tu configuración.
 
 Este conjunto de ejemplos proporciona información sobre cómo ejecutar operaciones específicas a través del WebSocket de NexaStream utilizando StompJS. Asegúrate de ajustar las rutas según tu configuración específica.
 
+## Otros articulos
+
+- [Comunicacion entre tareas distribuibles en NexaStream](COMMUNICATION_BETWEEN_DISTRIBUTABLE_TASKS_IN_NEXASTREAM.md)
+- [Analizando las noticias](EXAMPLE_NEWS_ANALYZER.md)
+- [NexaStream Functions](NEXASTREAM_FUNCTIONS.md)
+
+## ¡Participa en Nuestra Encuesta!
+
+Nos encantaría conocer tu experiencia y perspectiva sobre la integración de NexaStream con entornos de desarrollo existentes. Tu opinión es crucial para mejorar la plataforma y adaptarla aún mejor a tus necesidades.
+
+### ¿Cómo puedes contribuir?
+Te invitamos a participar en nuestra [encuesta sobre integración con entornos de desarrollo](https://forms.gle/wj91QUmxi2CMEdsk9). Es una oportunidad para compartir tus experiencias, sugerencias y ayudarnos a entender cómo NexaStream puede optimizar tus flujos de trabajo actuales.
+
+[¡Contestar encuesta!](https://forms.gle/wj91QUmxi2CMEdsk9)
+
+### ¿Por qué participar?
+Impacta en el Futuro: Tus respuestas influyen en las futuras mejoras y desarrollos de NexaStream.
+Colaboración Constructiva: Comparte tus desafíos y sugerencias para una colaboración más efectiva.
+Comunidad en Crecimiento: Únete a otros desarrolladores y forma parte activa de la comunidad NexaStream.
+¡Esperamos contar con tu valiosa contribución para hacer de NexaStream una herramienta aún más poderosa y adaptada a tus necesidades específicas!
+
 
 ## Contribuciones
 

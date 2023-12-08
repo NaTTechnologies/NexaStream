@@ -1,7 +1,6 @@
 package com.nat.nexastream.example.news;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 @Node(name = "news-analyzer")
@@ -103,9 +103,6 @@ public class NewsAnalyzer {
         SimpleDateFormat simpleDateFormatTo = new SimpleDateFormat("yyyy/MM/dd");
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
 
-//        File file = new File("data/");
-//        file.mkdirs();
-
         System.out.println("Cantidad de dependencias: " + returnValues.size());
         System.out.println("Valor de la dependencia greeting: " + returnValues.get("greeting"));
         return data
@@ -180,13 +177,20 @@ public class NewsAnalyzer {
     @DistributableTask(name = "on-save", dependencies = {"analyze-data"})
     public Iterable<List<Map<String, Map<String, Integer>>>> onSave(Map<String, Object> returnValues){
         Iterable<List<Map<String, Map<String, Integer>>>> data = (Iterable<List<Map<String, Map<String, Integer>>>>) returnValues.get("analyze-data");
+
+        File file = new File("data/");
+        file.mkdirs();
+
+        AtomicInteger i = new AtomicInteger();
+
         data
                 .forEach(maps -> {
                     // Objeto ObjectMapper de Jackson
                     ObjectMapper objectMapper = new ObjectMapper();
+                    i.getAndIncrement();
                     try {
                         // Convierte el objeto 'data' a formato JSON y lo guarda en un archivo
-                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("data.json"), data);
+                        objectMapper.writerWithDefaultPrettyPrinter().writeValue(new File("data/data_" + i.get() + ".json"), data);
 
                         System.out.println("Datos guardados exitosamente en 'data.json'");
                     } catch (IOException e) {
@@ -195,6 +199,5 @@ public class NewsAnalyzer {
                 });
         return data;
     }
-
 
 }

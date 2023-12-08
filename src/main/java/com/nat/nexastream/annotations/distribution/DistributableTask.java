@@ -14,4 +14,11 @@ public @interface DistributableTask {
     String name();
 
     boolean dependency() default false;
+
+    Enviroment enviroment() default Enviroment.JAVA;
+
+    public enum Enviroment{
+        JAVA,
+        JCTL
+    }
 }
