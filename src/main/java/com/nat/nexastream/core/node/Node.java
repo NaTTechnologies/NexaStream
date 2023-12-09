@@ -9,6 +9,10 @@ public class Node {
     private String name;
     private int resources;
 
+    //TODO: Cantidad de ejecutores en la instancia, se debe de actualizar +1
+    // cuando alguien esta conectado en alguna tarea y -1 cuando se desconecta
+    private int executors;
+
     private String ip;
 
     private int port = 8080;
@@ -19,13 +23,13 @@ public class Node {
 
     private List<TaskMetadata> tasks;
 
-    private List<Node> instances;
+    private List<Instance> instances;
 
-    public List<Node> getInstances() {
+    public List<Instance> getInstances() {
         return instances;
     }
 
-    public void setInstances(List<Node> instances) {
+    public void setInstances(List<Instance> instances) {
         this.instances = instances;
     }
 
@@ -93,5 +97,13 @@ public class Node {
 
     public void setPort(int port) {
         this.port = port;
+    }
+
+    public int getExecutors() {
+        return executors;
+    }
+
+    public void setExecutors(int executors) {
+        this.executors = executors;
     }
 }

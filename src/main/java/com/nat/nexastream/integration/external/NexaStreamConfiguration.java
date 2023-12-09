@@ -1,5 +1,6 @@
 package com.nat.nexastream.integration.external;
 
+import com.nat.nexastream.core.node.Instance;
 import com.nat.nexastream.core.node.Node;
 import com.nat.nexastream.core.node.NodeList;
 import com.nat.nexastream.core.tasks.TaskAssignmentManager;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -54,7 +56,7 @@ public class NexaStreamConfiguration {
                     node.setTasks(taskMetadata);
 
                     //Pendiente agregar las instances
-                    //node.setInstances(Arrays.asList(node));
+                    node.setInstances(Arrays.asList(new Instance(node)));
 
                     nodes.put(s, node);
                 });
@@ -69,5 +71,10 @@ public class NexaStreamConfiguration {
     ) throws IOException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
         TaskAssignmentManager taskAssignmentManager = new TaskAssignmentManager(packageName);
         return taskAssignmentManager;
+    }
+
+    @Bean
+    public RestTemplate restTemplate(){
+        return new RestTemplate();
     }
 }
