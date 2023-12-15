@@ -29,8 +29,8 @@ public class RemoteNodeManager {
         return nodeAssignmentManager.runNode(nodeId);
     }
 
-    @PostMapping("/run-task/{nameTask}")
-    public ResponseEntity<Object> runTask(@PathVariable String nameTask) {
+    @PostMapping(path = "/run-task/{nameTask}", produces = { "application/xml" })
+    public ResponseEntity<String> runTask(@PathVariable String nameTask) {
         return nodeAssignmentManager.runTask(nameTask);
     }
 

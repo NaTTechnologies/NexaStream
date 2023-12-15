@@ -20,7 +20,7 @@
 <!--    <maven.compiler.source>1.8</maven.compiler.source>-->
 <!--    <maven.compiler.target>1.8</maven.compiler.target>-->
     <java.version>11</java.version>
-    <spring-cloud.version>2021.0.8</spring-cloud.version>
+    <spring-cloud.version>2021.0.7</spring-cloud.version>
   </properties>
 
   <dependencies>
@@ -100,23 +100,39 @@
     </dependency>
 
     <dependency>
+      <groupId>com.sun.jersey.contribs</groupId>
+      <artifactId>jersey-apache-client4</artifactId>
+      <version>1.19.4</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.springframework.cloud</groupId>
+      <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+      <exclusions>
+        <exclusion>
+          <groupId>com.fasterxml.jackson.dataformat</groupId>
+          <artifactId>jackson-dataformat-xml</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+
+    <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-actuator</artifactId>
     </dependency>
-
-    <dependency>
-      <groupId>org.springframework.boot</groupId>
-      <artifactId>spring-boot-devtools</artifactId>
-      <scope>runtime</scope>
-      <optional>true</optional>
-    </dependency>
-
     <!--
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-devtools</artifactId>
+          <scope>runtime</scope>
+          <optional>true</optional>
     </dependency>
-    -->
+
+        <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-starter-loadbalancer</artifactId>
+        </dependency>
+        -->
   </dependencies>
 
   <dependencyManagement>

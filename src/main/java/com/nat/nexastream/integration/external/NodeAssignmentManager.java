@@ -2,12 +2,14 @@ package com.nat.nexastream.integration.external;
 
 import com.nat.nexastream.core.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -25,12 +27,18 @@ public class NodeAssignmentManager {
 
     public ResponseEntity<Map<String, Object>> runNode(String node) {
         String url = host + "/nodes/run-node/" + node;
+//        restTemplate.getInterceptors().add((httpRequest, bytes, clientHttpRequestExecution) -> {
+//            ClientHttpResponse response=clientHttpRequestExecution.execute(httpRequest, bytes);
+//            String text = new String(response.getBody().readAllBytes(), StandardCharsets.UTF_8);
+//            System.out.println(text);
+//            return response;
+//        });
         return restTemplate.postForEntity(url, null, (Class<Map<String, Object>>) (Class<?>) Map.class);
     }
 
-    public ResponseEntity<Object> runTask(String nameTask) {
+    public ResponseEntity<String> runTask(String nameTask) {
         String url = host + "/nodes/run-task/" + nameTask;
-        return restTemplate.postForEntity(url, null, Object.class);
+        return restTemplate.postForEntity(url, null, String.class);
     }
 
     public ResponseEntity<String> updateNodeResources(String id, Node updatedNode) {
