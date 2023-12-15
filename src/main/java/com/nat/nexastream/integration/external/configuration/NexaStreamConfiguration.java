@@ -1,4 +1,4 @@
-package com.nat.nexastream.integration.external;
+package com.nat.nexastream.integration.external.configuration;
 
 import com.nat.nexastream.core.node.Instance;
 import com.nat.nexastream.core.node.Node;
@@ -71,10 +71,5 @@ public class NexaStreamConfiguration {
     ) throws IOException, ClassNotFoundException, InvocationTargetException, InstantiationException, IllegalAccessException {
         TaskAssignmentManager taskAssignmentManager = new TaskAssignmentManager(packageName);
         return taskAssignmentManager;
-    }
-
-    @Bean
-    public RestTemplate restTemplate(){
-        return new RestTemplate();
     }
 }

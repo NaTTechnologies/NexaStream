@@ -1,4 +1,4 @@
-package com.nat.nexastream.integration.external;
+package com.nat.nexastream.integration.external.socket;
 
 import com.nat.nexastream.core.node.Node;
 import com.nat.nexastream.core.node.NodeList;
