@@ -29,7 +29,7 @@ public class RemoteNodeManager {
         return nodeAssignmentManager.runNode(nodeId);
     }
 
-    @PostMapping(path = "/run-task/{nameTask}", produces = { "application/xml" })
+    @PostMapping(path = "/run-task/{nameTask}", produces = { "application/json" })
     public ResponseEntity<String> runTask(@PathVariable String nameTask) {
         return nodeAssignmentManager.runTask(nameTask);
     }

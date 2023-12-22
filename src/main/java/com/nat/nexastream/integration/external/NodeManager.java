@@ -23,25 +23,25 @@ public class NodeManager {
     @Autowired
     private TaskAssignmentManager taskAssignmentManager;
 
-    @PostMapping
+    @PostMapping(produces = { "application/json" , "text/plain" })
     public ResponseEntity<String> registerNode(@RequestBody Node node) {
         nodeList.put(node.getId(), node);
         return ResponseEntity.status(HttpStatus.CREATED).body("Node registered successfully.");
     }
 
-    @PostMapping("/run-node/{nameNode}")
+    @PostMapping(path = "/run-node/{nameNode}", produces = { "application/json" })
     public ResponseEntity<Map<String, Object>> runNode(@PathVariable String nameNode) {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskAssignmentManager.runNode(nameNode));
     }
 
-    @PostMapping("/run-task/{nameTask}")
+    @PostMapping(path = "/run-task/{nameTask}", produces = { "application/json" })
     public @ResponseBody ResponseEntity<Object> runTask(@PathVariable String nameTask)
             throws ClassNotFoundException, InvocationTargetException,
             NoSuchMethodException, IllegalAccessException, InstantiationException {
         return ResponseEntity.status(HttpStatus.CREATED).body(taskAssignmentManager.executeTask(nameTask));
     }
 
-    @PutMapping("/{id}")
+    @PutMapping(path = "/{id}", produces = { "application/json" })
     public ResponseEntity<String> updateNodeResources(@PathVariable String id, @RequestBody Node updatedNode) {
         if (nodeList.containsKey(id)) {
             Node node = nodeList.get(id);
@@ -52,7 +52,7 @@ public class NodeManager {
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping(path = "/{id}", produces = { "application/json" })
     public ResponseEntity<Node> getNode(@PathVariable String id) {
         if (nodeList.containsKey(id)) {
             return ResponseEntity.ok(nodeList.get(id));
@@ -61,12 +61,12 @@ public class NodeManager {
         }
     }
 
-    @GetMapping
+    @GetMapping(produces = { "application/json" })
     public ResponseEntity<List<Node>> getAllNodes() {
         return ResponseEntity.ok(new ArrayList<>(nodeList.values()));
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping(path = "/{id}", produces = { "application/json", "text/plain" })
     public ResponseEntity<String> removeNode(@PathVariable String id) {
         if (nodeList.containsKey(id)) {
             nodeList.remove(id);
