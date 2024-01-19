@@ -75,3 +75,11 @@ Una vez que has iniciado un nodo, puedes ejecutar una tarea específica en ese n
 ```bash
 curl -X POST http://localhost:8080/remote/nodes/run-task/hello-world
 ```
+
+## Contribuciones
+
+NexaStream es un proyecto de código abierto y estamos emocionados de recibir contribuciones de la comunidad. Si tienes ideas, correcciones o características que te gustaría aportar, por favor consulta nuestra [Guía de Contribución](CONTRIBUTION.md) para obtener más detalles sobre cómo colaborar.
+
+¡Gracias por unirte a la comunidad de NexaStream!
+
+[Website de NaT](https://www.nattechnologiesagency.com/) | [Documentación](WIKI.md)
