@@ -75,8 +75,9 @@ Ejemplo de Cabecera de Solicitud:
 ```http
 GET http://localhost:8761/remote/nodes
 Authorization: Bearer tu_token_de_acceso
-Siguiendo estos pasos, podrás configurar y utilizar usuarios por defecto para acceder mediante autenticación básica y obtener tokens de acceso en NexaStream Security. Recuerda mantener las credenciales de los usuarios seguras y ajustar la configuración según tus necesidades de seguridad.
 ```
+
+Siguiendo estos pasos, podrás configurar y utilizar usuarios por defecto para acceder mediante autenticación básica y obtener tokens de acceso en NexaStream Security. Recuerda mantener las credenciales de los usuarios seguras y ajustar la configuración según tus necesidades de seguridad.
 
 ## Contribuciones
 
