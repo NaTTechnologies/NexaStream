@@ -10,10 +10,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.web.servlet.WebMvcAutoConfiguration;
-import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
+//import org.springframework.web.reactive.config.EnableWebFlux;
 
 //@EnableWebFlux
 @SpringBootApplication
+@EnableEurekaServer
+@EnableEurekaClient
+@EnableAutoConfiguration
 //@EnableAutoConfiguration(exclude = {WebMvcAutoConfiguration.class })
 public class App implements CommandLineRunner{
 

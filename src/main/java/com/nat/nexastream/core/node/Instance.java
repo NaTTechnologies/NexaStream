@@ -11,6 +11,16 @@ public class Instance {
     private String username = "admin";
     private String password = "1234";
 
+    private int executors = 0;
+
+    public int getExecutors() {
+        return executors;
+    }
+
+    public void setExecutors(int executors) {
+        this.executors = executors;
+    }
+
     public Instance(Node node) {
         this.node = node;
         this.setId(node.getId());

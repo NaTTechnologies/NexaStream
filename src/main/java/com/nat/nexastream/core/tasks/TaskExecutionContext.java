@@ -345,22 +345,47 @@ public class TaskExecutionContext {
         // Carga el script desde resources
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("script/" + metadata.getNode().name() + "/" + metadata.getTaskName() + ".jactl");
 
-        // Comprueba si el script se ha encontrado
+// Comprueba si el script se ha encontrado
         if (inputStream == null) {
             throw new RuntimeException("El script no se ha encontrado");
         }
 
-        // Lee el contenido del script
-        byte[] bytes = inputStream.readAllBytes();
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+
+            // Lee los bytes del InputStream y escribe en ByteArrayOutputStream
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+
+            // Obtiene los bytes resultantes
+            byte[] bytes = outputStream.toByteArray();
 
             // Mapa de variables globales
-        Map<String, Object> globals = new HashMap<>();
-        globals.put("returnValues", returns);
+            Map<String, Object> globals = new HashMap<>();
+            globals.put("returnValues", returns);
 
-        // Compila el script
-        JactlScript compileScript =
-                Jactl.compileScript(new String(bytes), globals, jactlContextEngine);
-        object = compileScript.runSync(globals);
+            // Compila el script
+            JactlScript compileScript =
+                    Jactl.compileScript(new String(bytes), globals, jactlContextEngine);
+            object = compileScript.runSync(globals);
+        }
+        catch (IOException e) {
+            // Manejar excepciones de lectura o cierre del flujo
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                // Asegúrate de cerrar el InputStream
+                if (inputStream != null) {
+                    inputStream.close();
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return object;
     }
 }
