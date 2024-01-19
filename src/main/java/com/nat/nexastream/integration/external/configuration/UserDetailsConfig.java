@@ -33,15 +33,16 @@ public class UserDetailsConfig {
         return userDetailsList;
     }
 
-    @Bean("userServiceOAuth")
+    //@Bean("userServiceOAuth")
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {
             @Override
             public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                System.out.println("El usuario es:" + username);
                 try {
                     List<UserDetails> userDetailsList = loadUsersFromJson();
                     return userDetailsList.stream()
-                            .filter(userDetails -> userDetails.getUsername().equals(username))
+                            .filter(userDetails -> userDetails.getUsername().equalsIgnoreCase(username))
                             .findFirst()
                             .orElseThrow(() -> new UsernameNotFoundException("Usuario no encontrado"));
                 } catch (IOException e) {

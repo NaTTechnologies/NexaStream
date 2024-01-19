@@ -3,6 +3,7 @@ package com.nat.nexastream.integration.external;
 import com.nat.nexastream.core.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/remote/nodes")
+@PreAuthorize("isAuthenticated()")
 public class RemoteNodeManager {
 
     private final NodeAssignmentManager nodeAssignmentManager;

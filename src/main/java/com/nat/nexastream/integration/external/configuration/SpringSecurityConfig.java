@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -26,9 +25,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
     //@Autowired
     //private EventAuthenticationSuccessHandler onAuthenticationSuccess;
 
-    @Autowired
-    @Qualifier("userServiceOAuth")
-    private UserDetailsService usuarioService;
+    //@Autowired
+    //@Qualifier("userServiceOAuth")
+    //private UserDetailsService usuarioService;
 
     @Autowired
     private AuthenticationEventPublisher eventPublisher;
@@ -88,9 +87,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter{
         return super.authenticationManager();
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
+//    @Bean
+//    public RestTemplate restTemplate() {
+//        return new RestTemplate();
+//    }
 
 }

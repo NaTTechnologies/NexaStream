@@ -6,6 +6,7 @@ import com.nat.nexastream.core.tasks.TaskAssignmentManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.InvocationTargetException;
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/nodes")
+@PreAuthorize("isAuthenticated()")
 public class NodeManager {
 
     @Autowired
